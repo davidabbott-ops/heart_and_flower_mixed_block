@@ -1,0 +1,42 @@
+"trial_type","trial_index","time_elapsed","internal_node_id","SubjectID","success","timeout","failed_images","failed_audio","failed_video","TaskRow","ScreenType","rt","response","stimulus","ImageFile","Experiment","BlockNo","BlockOrder","TrialNo","TrialType","IsTrial","TrialName","PseudoSequence","StimSide","ExpRes","Congruent","Response","Correct","RT","ResponseKey","PracticeAttempt","DateTime","BrowserUserAgent","feedback_correct","SecondPracticeTotal","FirstPracticeErrorsForSecondPractice"
+"pavlovia","0","1376","0.0-0.0","ad","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""
+"preload","1","3138","0.0-1.0","ad","true","false","[]","[]","[]","0","Preload","","","","","","","","","","","","","","","","","","","","","","","","",""
+"survey-html-form","2","6071","0.0-2.0","ad","","","","","","0","Demographics","2932","{""subject_id"":""ad""}","","","","","","","","","","","","","","","","","","","","","","",""
+"fullscreen","3","8134","0.0-3.0","ad","true","","","","","0","Fullscreen","","","","","","","","","","","","","","","","","","","","","","","","",""
+"html-keyboard-response","4","9945","0.0-4.0","ad","","","","","","0","Instruction","1811"," ","
+      <div class=""instr-wrap"">
+        <img src=""resources/p01.png"" class=""instr-img"" alt=""instruction"" onerror=""this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=&quot;fallback-box&quot;><h1>Welcome</h1><p>Welcome to the Hearts and Flowers Game.</p><p>Press SPACEBAR to continue.</p></div>');"">
+        <div class=""continue-hint"">Heart and Flower</div>
+      </div>","p01.png","","","","","","","","","","","","","","","","","","","","",""
+"html-keyboard-response","5","10873","0.0-5.0","ad","","","","","","0","Instruction","927"," ","
+      <div class=""instr-wrap"">
+        <img src=""resources/p02.png"" class=""instr-img"" alt=""instruction"" onerror=""this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=&quot;fallback-box&quot;><h1>Heart game</h1><p>For hearts, press the SAME side. S = Left, L = Right.</p><p>Press SPACEBAR to continue.</p></div>');"">
+        <div class=""continue-hint"">Heart and Flower</div>
+      </div>","p02.png","","","","","","","","","","","","","","","","","","","","",""
+"html-keyboard-response","6","11727","0.0-6.0","ad","","","","","","0","Instruction","853"," ","
+      <div class=""instr-wrap"">
+        <img src=""resources/p03.png"" class=""instr-img"" alt=""instruction"" onerror=""this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=&quot;fallback-box&quot;><h1>Heart game</h1><p>For hearts, press the SAME side. S = Left, L = Right.</p><p>Press SPACEBAR to continue.</p></div>');"">
+        <div class=""continue-hint"">Heart and Flower</div>
+      </div>","p03.png","","","","","","","","","","","","","","","","","","","","",""
+"html-keyboard-response","7","12409","0.0-7.0","ad","","","","","","0","Instruction","682"," ","
+      <div class=""instr-wrap"">
+        <img src=""resources/p04.png"" class=""instr-img"" alt=""instruction"" onerror=""this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=&quot;fallback-box&quot;><h1>Heart game</h1><p>For hearts, press the SAME side. S = Left, L = Right.</p><p>Press SPACEBAR to continue.</p></div>');"">
+        <div class=""continue-hint"">Heart and Flower</div>
+      </div>","p04.png","","","","","","","","","","","","","","","","","","","","",""
+"hf-trial","8","15057","0.0-8.0-0.0","ad","","","","","","1","","2646","l","","","HeartsFlowers","1","1","1","Practice","0","p_con_r","h0","2","2","1","2","1","2646","l","1","2026-07-17T20:06:30.020Z","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0","","",""
+"hf-practice-feedback","9","15810","0.0-8.0-1.0","ad","","","","","","0","PracticeFeedback","","","","","","","","","","","","","","","","","","","","","","","1","",""
+"hf-trial","10","16841","0.0-9.0-0.0","ad","","","","","","1","","1030","s","","","HeartsFlowers","1","1","2","Practice","0","p_con_l","h0","1","1","1","1","1","1030","s","1","2026-07-17T20:06:31.804Z","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0","","",""
+"hf-practice-feedback","11","17602","0.0-9.0-1.0","ad","","","","","","0","PracticeFeedback","","","","","","","","","","","","","","","","","","","","","","","1","",""
+"hf-trial","12","18409","0.0-10.0-0.0","ad","","","","","","1","","806","l","","","HeartsFlowers","1","1","3","Practice","0","p_con_r","h0","2","2","1","2","1","806","l","1","2026-07-17T20:06:33.372Z","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0","","",""
+"hf-practice-feedback","13","19171","0.0-10.0-1.0","ad","","","","","","0","PracticeFeedback","","","","","","","","","","","","","","","","","","","","","","","1","",""
+"hf-trial","14","19759","0.0-11.0-0.0","ad","","","","","","1","","588","s","","","HeartsFlowers","1","1","4","Practice","0","p_con_l","h0","1","1","1","1","1","588","s","1","2026-07-17T20:06:34.722Z","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0","","",""
+"hf-practice-feedback","15","20516","0.0-11.0-1.0","ad","","","","","","0","PracticeFeedback","","","","","","","","","","","","","","","","","","","","","","","1","",""
+"html-keyboard-response","16","21291","0.0-12.0","ad","","","","","","0","Instruction","772"," ","
+      <div class=""instr-wrap"">
+        <img src=""resources/practice_1.png"" class=""instr-img"" alt=""instruction"" onerror=""this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=&quot;fallback-box&quot;><h1>Heart practice</h1><p>Now you will do another Heart practice without feedback.</p><p>Press SPACEBAR to continue.</p></div>');"">
+        <div class=""continue-hint"">Heart and Flower</div>
+      </div>","practice_1.png","","","","","","","","","","","","","","","","","","","","",""
+"hf-trial","17","22552","0.0-13.0-0.0","ad","","","","","","1","","null","null","","","HeartsFlowers","1","1","1","Practice2","0","p2_con_l","hP2","1","1","1","0","0","0","","","2026-07-17T20:06:37.515Z","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0","","4","0"
+"hf-trial","18","23817","0.0-13.1-0.1","ad","","","","","","1","","null","null","","","HeartsFlowers","1","1","2","Practice2","0","p2_con_r","hP2","2","2","1","0","0","0","","","2026-07-17T20:06:38.780Z","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0","","4","0"
+"hf-trial","19","25082","0.0-13.2-0.2","ad","","","","","","1","","null","null","","","HeartsFlowers","1","1","3","Practice2","0","p2_con_r","hP2","2","2","1","0","0","0","","","2026-07-17T20:06:40.045Z","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0","","4","0"
+"hf-trial","20","26346","0.0-13.3-0.3","ad","","","","","","1","","null","null","","","HeartsFlowers","1","1","4","Practice2","0","p2_con_l","hP2","1","1","1","0","0","0","","","2026-07-17T20:06:41.309Z","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0","","4","0"
