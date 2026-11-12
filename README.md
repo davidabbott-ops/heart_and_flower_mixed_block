@@ -1,385 +1,166 @@
-# Hearts & Flowers Pavlovia / jsPsych v7
+# Hearts & Flowers
 
-本版本基于当前 `experiment.js` 的正式实验流程更新，重点修改 **第二轮无反馈练习（Practice2）** 的动态加题与连续无反应重启逻辑。
+Task documentation updated 12 November 2026
 
-## 1. 项目目录
+This document describes the current keyboard task in experiment.js. It updates the older task overview, block design, response instructions and data key to match the supplied code. The sample CSV is used as a check of recorded output.
 
-Pavlovia / GitLab 项目根目录建议保持：
+## File and program information
 
-```text
-project-root/
-├─ data/
-├─ resources/
-├─ experiment.js
-├─ index.html
-└─ README.md
-```
+| **Item**          | **Current revision**                                                                                                                      |
+|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| File info         | experiment.js, with the project HTML, CSS and resources folder.                                                                           |
+| Brief description | Heart: respond on the SAME side. Flower: respond on the OPPOSITE side. Blocks occur in the fixed order hearts, flowers, then mixed.       |
+| Version           | Keyboard responses; stimulus duration 750 ms. This file does not implement touchscreen responses or automatic age-based timing selection. |
+| Program info      | A browser-based Hearts & Flowers task implemented in jsPsych 7.1.2, adapted from Mengquan’s Pavlovia-hosted version                       |
 
-当前代码从 `resources/` 读取所有刺激与指导语图片。
+## Task design
 
-本次新增/确认使用的第二轮练习图片：
+Enter the participant ID and continue to full screen. Instructions are normally advanced with SPACEBAR. The sequence is:
 
-```text
-resources/practice_1.png
-resources/practice_1_1.png
-resources/practice_1_2.png
-resources/practice_2.png
-resources/practice_2_1.png
-resources/practice_2_2.png
-```
+- Heart instructions → four feedback practice items → timed second-stage practice → 12 formal heart trials.
 
-其中：
+- Flower instructions → four feedback practice items → timed second-stage practice → 12 formal flower trials.
 
-- `practice_1.png`：Heart 第二轮练习开始指导语第 1 页
-- `practice_1_1.png`：Heart 第二轮练习开始指导语第 2 页，紧接 `practice_1.png`
-- `practice_1_2.png`：Heart 第二轮练习连续 4 个 trial 完全未按键时显示的提醒页
-- `practice_2.png`：Flower 第二轮练习开始指导语第 1 页
-- `practice_2_1.png`：Flower 第二轮练习开始指导语第 2 页，紧接 `practice_2.png`
-- `practice_2_2.png`：Flower 第二轮练习连续 4 个 trial 完全未按键时显示的提醒页
+- Mixed instructions → 49 formal mixed trials → end instructions and data saving. There is no mixed practice.
 
-本代码保留当前材料映射：
+## Timing for timed practice and formal trials
 
-```text
-Welcome:             p01.png
-Heart rules:         p02.png, p03.png, p04.png
-Heart formal start:  p11.png
-Block 1 done:        p16.png
-Flower rules:        p17.png, p18.png, p19.png
-Flower formal start: p26.png
-Block 2 done:        p31.png
-Flower again:        p32.png, p33.png
-Block 3 done:        p34.png
-Heart again:         p35.png, p36.png
-End:                 p37.png
+| **Phase**             | **Duration** | **Time from trial start** |
+|-----------------------|--------------|---------------------------|
+| Fixation cross        | 250 ms       | 0–250 ms                  |
+| Blank before stimulus | 250 ms       | 250–500 ms                |
+| Heart or flower       | 750 ms       | 500–1250 ms               |
+| Blank between trials  | 250 ms       | 1250–1500 ms              |
 
-Heart feedback:  wrong p09.png / correct p10.png
-Flower feedback: wrong p25.png / correct p24.png
-```
+The fixation cross is a bold 48 px “+” and is absent during the stimulus. RT starts at stimulus onset. The first S/L response is accepted during the stimulus or following blank, giving a 1000 ms response window. Responses do not shorten timed trials; the programmed total is 1500 ms. First-stage feedback practice uses different timing, described below.
 
-`heart.png` 与 `flower.png` 仍作为实际 trial 刺激图片。
+## Block design
 
----
+### First-stage feedback practice for hearts and flowers
 
-## 2. 第一轮练习（有反馈 Practice）
+Each game has four base practice items. Heart stimulus positions are right, left, right, left; flower positions are left, right, left, right. A stimulus appears immediately and remains until an S/L response. There is no timed fixation or blank sequence in this practice stage.
 
-Heart 和 Flower 各自仍为 **4 个基础练习项目**。
+A correct response produces positive feedback for 750 ms, then advances to the next item. A wrong response produces negative feedback that waits for SPACEBAR, then repeats the same item. Repeats have no programmed maximum. There is no experimenter Y/N decision or block-level passing threshold. Each attempt is saved with the same TrialNo and an incremented PracticeAttempt.
 
-第一轮练习逻辑保持不变：
+### Second-stage timed practice for hearts and flowers
 
-1. trial 图片一直显示，直到被试按 `S` 或 `L`。
-2. 正确：显示 Correct 页面 750 ms，然后自动进入下一项目。
-3. 错误：显示 Oopsies 页面，等待按 SPACEBAR，然后重复当前同一项目。
-4. 直到该项目答对后才进入下一项目。
-5. **第一轮练习产生多少次错误，不再影响第二轮练习的题数。**
+Each game begins with four fixed stimulus positions: hearts left, right, right, left; flowers right, right, left, left. These trials use the 1500 ms timing and 1000 ms response window, without feedback.
 
-第一轮练习中的 `PracticeAttempt` 继续记录同一项目是第几次作答。
+Each wrong key or missed response adds one trial with a randomly chosen stimulus side, up to four extra trials per attempt. An error on an extra trial can also add a trial until that cap is reached. An attempt therefore contains four to eight trials unless interrupted by a restart.
 
----
+Four consecutive complete nonresponses trigger a reminder that waits for SPACEBAR, followed by a fresh four-trial attempt. The extra-trial count and nonresponse streak reset; attempt and restart counters increase. Any S/L response, including a wrong response, resets the nonresponse streak. The executable restart flow shows the reminder only; it does not redisplay the initial second-stage start slides, despite comments in the code saying otherwise.
 
-## 3. 第二轮练习（无反馈 Practice2）
+### Formal heart and flower blocks
 
-### 3.1 开始指导语
+Each block contains 12 trials, with six expected left responses and six expected right responses. One predefined sequence is randomly selected from h1–h6 for hearts and f1–f6 for flowers. There is no feedback, repetition after errors, or accuracy-based extension.
 
-Heart 第二轮练习开始前依次显示：
+### Formal mixed block
 
-```text
-practice_1.png
-↓ SPACEBAR
-practice_1_1.png
-↓ SPACEBAR
-开始 Practice2
-```
+One sequence is randomly selected from m1–m6. There are three distinct sequences with duplicate labels: m1 = m4, m2 = m5, and m3 = m6. Every sequence contains 49 trials. The first trial is saved as TrialNo 1 with IsTrial = 1; the code does not discard it or mark it for exclusion.
 
-Flower 第二轮练习开始前依次显示：
+| **Sequence labels** | **Hearts L / R** | **Flowers L / R** | **Total** |
+|---------------------|------------------|-------------------|-----------|
+| m1 and m4           | 12 / 12          | 13 / 12           | 49        |
+| m2 and m5           | 12 / 14          | 13 / 10           | 49        |
+| m3 and m6           | 13 / 13          | 11 / 12           | 49        |
 
-```text
-practice_2.png
-↓ SPACEBAR
-practice_2_1.png
-↓ SPACEBAR
-开始 Practice2
-```
+L/R in this table denotes stimulus position. Expected responses are on the same side for hearts and the opposite side for flowers. The mixed sequences are not all exactly balanced for stimulus or response side. All 49 trials are recorded without feedback. Any first-trial exclusion must be applied separately during analysis.
 
-### 3.2 基础 trial 数与固定顺序
+## Responses and buttons
 
-每次进入/重新进入第二轮练习时，都从 **4 个基础 trial** 开始：
+| **Control**     | **Function**                                                                                                                                                   |
+|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| S               | Left-hand response.                                                                                                                                            |
+| L               | Right-hand response.                                                                                                                                           |
+| SPACEBAR        | Advance instruction images and negative practice feedback; acknowledge the second-stage nonresponse reminder; download the CSV at the local completion screen. |
+| Continue button | Submit the participant ID and enter full screen.                                                                                                               |
+| ESC             | Stop the task. Local preview attempts to download completed task rows as an ESC_partial CSV. The current unfinished trial is not guaranteed to be included.    |
 
-- Heart：`L R R L`，即 `con_L, con_R, con_R, con_L`
-- Flower：`R R L L`，即 `incon_R, incon_R, incon_L, incon_L`
+Only the first accepted S/L response per trial is scored. Held keys are not accepted as new responses. Keys pressed before stimulus onset are outside the timed response window.
 
-Practice2 与正式实验使用相同时序：
+## Data saving
 
-```text
-500 ms fixation
-→ 500 ms stimulus
-→ 250 ms blank
-```
+The exported CSV contains one row per completed task attempt, including both practice stages and formal trials. Instruction, feedback and demographic screen rows are excluded. The participant ID entered in the form supplies SubjectID; the form does not collect age or sex.
 
-RT 从 stimulus 出现时开始计算，允许反应的总窗口为 750 ms。Practice2 **不显示 Correct / Oopsies 反馈**。
+In local preview, SPACEBAR at the completion screen downloads HeartsFlowers\_\<SubjectID\>.csv. On Pavlovia, the finish command is configured to upload the filtered CSV. ESC stops the online task without the normal finish sequence; successful online saving after ESC should not be assumed.
 
-### 3.3 Error 的定义
+## Data key
 
-在第二轮练习中，以下两类情况都记为 `Error = 1`：
+| **Field**                    | **Meaning**                                                                                                                                                     |
+|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| SubjectID / Experiment       | Participant ID / fixed task name HeartsFlowers.                                                                                                                 |
+| BlockNo / BlockOrder         | 1 = heart, 2 = flower, 3 = mixed; order is fixed.                                                                                                               |
+| TrialNo                      | Formal trial number, base feedback-practice item number, or second-stage trial number within the current attempt.                                               |
+| TrialType / IsTrial          | Practice or Practice2: IsTrial = 0. Formal Trial: IsTrial = 1.                                                                                                  |
+| TrialName                    | p\_ = feedback practice; p2\_ = timed practice; t\_ = formal. con = heart, incon = flower; l/r = stimulus position.                                             |
+| PseudoSequence               | h0/f0 = feedback practice; hP2/fP2 = timed practice; h1–h6, f1–f6 or m1–m6 = formal sequence.                                                                   |
+| StimSide / ExpRes            | Stimulus side / expected response side: 1 = left, 2 = right.                                                                                                    |
+| Congruent                    | 1 = heart, same-side rule; 0 = flower, opposite-side rule.                                                                                                      |
+| Response / ResponseKey       | Response side: 1 = left, 2 = right, 0 = none. Key: s, l, or blank for no response.                                                                              |
+| Correct / Error / NoResponse | Binary flags. Correct + Error = 1. Error includes wrong keys and nonresponses; NoResponse identifies the latter.                                                |
+| ResponseOutcome              | Correct, WrongKey or NoResponse.                                                                                                                                |
+| RT                           | Milliseconds from stimulus onset, rounded to an integer. No response is coded 0, not a measured zero-latency response. Feedback practice has no fixed RT limit. |
+| PracticeAttempt              | Attempt number for the current feedback-practice item; blank for other trial types.                                                                             |
 
-1. **WrongKey**：在 750 ms 内按了键，但按错 `S/L`；
-2. **NoResponse**：整个 750 ms 反应窗口内没有按 `S/L`。
+## Second-stage practice data key
 
-正确反应记为 `Error = 0`。
+These fields are populated only for Practice2 rows. State values are recorded after scoring the current trial and applying any extra-trial or restart trigger.
 
-### 3.4 根据第二轮自身 Error 动态增加 trial
+| **Field**                         | **Meaning**                                                                                  |
+|-----------------------------------|----------------------------------------------------------------------------------------------|
+| SecondPracticeAttempt             | Attempt number within the current game, beginning at 1.                                      |
+| SecondPracticeGlobalTrialNo       | Running trial count across all second-stage attempts within the game.                        |
+| SecondPracticeIsExtra             | 1 for a trial beyond the four base trials; otherwise 0.                                      |
+| SecondPracticeExtraAddedThisTrial | 1 if this error adds an extra trial; otherwise 0.                                            |
+| SecondPracticeExtraAddedTotal     | Cumulative extras added in this attempt, from 0 to 4.                                        |
+| SecondPracticePlannedTotal        | Current planned attempt length, including added extras; 4–8.                                 |
+| SecondPracticeNoResponseStreak    | Consecutive complete nonresponses, including this trial; reset to 0 by an accepted response. |
+| SecondPracticeRestartTriggered    | 1 when this trial reaches four consecutive nonresponses; otherwise 0.                        |
+| SecondPracticeRestartCount        | Cumulative restarts for this game; includes the restart triggered by this row.               |
 
-第二轮最初有 4 个基础 trial。
+## Other recorded fields
 
-**只根据第二轮自身产生的 Error 动态增加练习题：**
+| **Field**        | **Meaning**                                                                                     |
+|------------------|-------------------------------------------------------------------------------------------------|
+| DateTime         | UTC timestamp written when the completed trial is scored. It is not a stimulus-onset timestamp. |
+| BrowserUserAgent | Browser and operating-system identification supplied by the browser.                            |
 
-- 每出现 1 个 Error，立即在当前 Practice2 尾部增加 1 个随机左右位置的额外 trial；
-- 最多增加 4 个额外 trial；
-- 因此单次 Practice2 attempt 的计划总数为 **4–8 个 trial**；
-- 额外 trial 如果再次出错，也可以继续触发加题，只要累计额外题数尚未达到 4。
+## Reference output check
 
-示例：
+The supplied fourth-testing CSV contains 92 task rows: 73 formal trials and 19 practice attempts. Its formal sequences are h1, f3 and m6, with 12, 12 and 49 trials respectively, matching the supplied code.
 
-```text
-4 个基础题中错 1 个
-→ 增加 1 个额外题
-→ 当前计划总数变为 5
-```
+| **Block** | **Formal trials** | **Correct** | **Wrong key** | **No response** |
+|-----------|-------------------|-------------|---------------|-----------------|
+| Hearts    | 12                | 12          | 0             | 0               |
+| Flowers   | 12                | 10          | 2             | 0               |
+| Mixed     | 49                | 22          | 23            | 4               |
 
-如果随后额外题又错 1 个，并且额外题总数尚未达到 4：
+Both feedback-practice stages contain five recorded attempts because one item is answered incorrectly and repeated. Heart timed practice contains four trials. Flower timed practice contains five trials because one nonresponse adds an extra trial. These counts reflect this test run; practice totals can vary between runs.
 
-```text
-再增加 1 个额外题
-→ 当前计划总数变为 6
-```
+Recorded timed-trial intervals of approximately 1500–1517 ms are consistent with the programmed 1500 ms duration. CSV timestamps cannot establish exact fixation or stimulus presentation durations, or verify visual appearance. The code specifies the bold 48 px fixation cross and removes it before stimulus presentation.
 
----
+## Sources for this revision
 
-## 4. 连续 4 个 trial 完全未按键：提醒并重新开始第二轮练习
+### Task origins and implementation credits
 
-此规则仅检查 **NoResponse**，不是一般 Error。
+The Hearts & Flowers task originated in Adele Diamond’s laboratory at the University of British Columbia.  
+see: https://www.devcogneuro.com/eftasks.html#Heart
 
-- WrongKey 虽然属于 Error、会增加额外 trial，但因为被试确实按过键，所以会把“连续未反应计数”清零。
-- 只有 `NoResponse = 1` 才会累积连续未反应次数。
+The browser implementation on which this repository is based was prepared by:  
+  
+**Dr Rui Wang (Cantab)**
 
-如果在同一次 Practice2 attempt 中出现：
+Research Fellow
 
-```text
-连续 4 个 trial 都完全没有 S/L 键盘反应
-```
+Nanyang Technological University  
+Centre for Lifelong Learning and Individualized Cognition  
+& Cambridge Centre for Advanced Research and Education in Singapore 
 
-则在第 4 个 NoResponse trial 结束后：
+and is available through:  
+https://gitlab.pavlovia.org/Mengquan/heart_and_flower.  
+  
+We gratefully acknowledge Rui’s team in implementing the task in JavaScript using jsPsych, with support for hosting and data collection on Pavlovia.
 
-### Heart
+This repository contains subsequent revisions by David Abbott in Adele Diamond’s laboratory. These revisions adapt the supplied browser implementation to our laboratory’s task requirements. Details of the changes are provided in the version history.
 
-```text
-显示 practice_1_2.png
-↓ SPACEBAR
-重新从 4 个 Heart 基础 Practice2 trial 开始（LRRL）
-```
-
-### Flower
-
-```text
-显示 practice_2_2.png
-↓ SPACEBAR
-重新从 4 个 Flower 基础 Practice2 trial 开始（RRLL）
-```
-
-重启时：
-
-- 本次 Practice2 的动态额外题数重新归零；
-- 新 attempt 再从 4 个基础 trial 开始；
-- 新 attempt 中仍继续应用“每个 Error 增加 1 题、最多增加 4 题”的规则；
-- 如果之后再次出现连续 4 个 NoResponse，可以再次触发相同提醒与重启；
-- **重启前已经完成的 Practice2 trial 不会从数据中删除**，而是保留并通过 attempt / restart 字段标记，方便核查。
-
----
-
-## 5. 正式实验
-
-正式 trial 时序保持：
-
-```text
-500 ms fixation
-→ 500 ms stimulus
-→ 250 ms blank
-```
-
-RT 从刺激出现时开始，最大反应窗口 750 ms。
-
-正式实验流程继续按当前代码执行：
-
-```text
-Heart formal block
-→ Flower formal block
-→ Flower formal block again
-→ Heart formal block again
-```
-
-正式 pseudo-sequence 与现有 6 组 Heart / 6 组 Flower 序列均未修改。
-
----
-
-## 6. CSV 数据字段
-
-最终 CSV 只导出 `TaskRow = 1` 的行为 trial 行，指导页、feedback 页面和 fullscreen 页面不进入最终行为 CSV。
-
-### 6.1 原有核心字段
-
-- `SubjectID`：被试 ID
-- `Experiment`：固定为 `HeartsFlowers`
-- `BlockNo`
-- `BlockOrder`
-- `TrialNo`
-- `TrialType`：`Practice` / `Practice2` / `Trial`
-- `IsTrial`：正式 trial 为 1，练习为 0
-- `TrialName`
-- `PseudoSequence`
-- `StimSide`：1=左，2=右
-- `ExpRes`：正确反应位置，1=左/S，2=右/L
-- `Congruent`
-- `Response`：1=左/S，2=右/L，0=未反应
-- `Correct`：1=正确，0=错误或未反应
-- `RT`：毫秒；未反应仍记为 0
-- `ResponseKey`：`s` / `l` / 空
-- `PracticeAttempt`：第一轮有反馈练习中，同一项目的第几次作答
-- `DateTime`
-- `BrowserUserAgent`
-
-### 6.2 新增的通用反应结果字段
-
-- `Error`：1=错误，0=正确。WrongKey 与 NoResponse 都属于 Error
-- `NoResponse`：1=750 ms 内完全没有 S/L 反应；否则为 0
-- `ResponseOutcome`：
-  - `Correct`
-  - `WrongKey`
-  - `NoResponse`
-
-这三个字段可避免后续分析时把 `RT=0` 误解释为 0 ms 的真实反应。
-
-### 6.3 第二轮 Practice2 专用字段
-
-这些字段只在 `TrialType = Practice2` 的行中有值，其他 trial 留空。
-
-- `SecondPracticeAttempt`：当前第二轮练习 attempt 编号。首次为 1；每次“连续 4 个 NoResponse”重启后 +1
-- `SecondPracticeGlobalTrialNo`：该 Heart/Flower 第二轮练习从第一次开始以来实际呈现的 Practice2 trial 总顺序号；重启后不归零
-- `SecondPracticeIsExtra`：0=本 attempt 的前 4 个基础 trial；1=因 Error 动态增加的额外 trial
-- `SecondPracticeExtraAddedThisTrial`：当前 trial 是否触发增加 1 个额外 trial，1=是，0=否
-- `SecondPracticeExtraAddedTotal`：当前 attempt 到本 trial 结束时累计增加了多少个额外 trial，范围 0–4
-- `SecondPracticePlannedTotal`：当前 trial 结束后，本 attempt 当前计划总 trial 数，范围 4–8
-- `SecondPracticeNoResponseStreak`：当前 trial 结束后连续 NoResponse 的次数；有任何 S/L 键盘反应即清零
-- `SecondPracticeRestartTriggered`：当前 trial 是否正好触发“连续 4 个 NoResponse”重启，1=触发，0=未触发
-- `SecondPracticeRestartCount`：截至当前 trial 已触发的累计重启次数；触发重启的那一行已经计入本次重启
-
-旧版的：
-
-```text
-FirstPracticeErrorsForSecondPractice
-```
-
-已删除，因为第一轮错误不再决定第二轮题数。
-
-旧版 `SecondPracticeTotal` 被更明确的：
-
-```text
-SecondPracticePlannedTotal
-```
-
-替代。
-
----
-
-## 7. 数据判定示例
-
-### 正确反应
-
-```text
-Correct = 1
-Error = 0
-NoResponse = 0
-ResponseOutcome = Correct
-```
-
-### 按错键
-
-```text
-Correct = 0
-Error = 1
-NoResponse = 0
-ResponseOutcome = WrongKey
-```
-
-如果发生在 Practice2 且额外题尚未达到 4 个，则增加 1 个 trial。
-
-### 超时未按键
-
-```text
-Correct = 0
-Error = 1
-NoResponse = 1
-ResponseOutcome = NoResponse
-RT = 0
-```
-
-如果发生在 Practice2：
-
-1. 若额外题尚未达到 4 个，增加 1 个 trial；
-2. `SecondPracticeNoResponseStreak + 1`；
-3. 若 streak 达到 4，显示对应 `_2` 提醒 slide，并重启整个 Practice2 attempt。
-
----
-
-## 8. 本地与 Pavlovia
-
-### 本地预览
-
-直接本地运行时不执行 Pavlovia init/finish。实验结束后按 SPACEBAR 下载 CSV。
-
-本地按 ESC 会停止实验并下载当前 partial CSV。
-
-### Pavlovia
-
-在 `run.pavlovia.org` 上运行时使用 Pavlovia plugin：
-
-```text
-init
-→ experiment
-→ finish / save CSV
-```
-
-正式收数前建议使用 Piloting 模式至少测试以下情况：
-
-1. 第一轮全错/多次错题不会改变第二轮初始题数，第二轮仍从 4 题开始；
-2. 第二轮全部正确时恰好 4 题结束；
-3. 第二轮按错 1 次时增加到 5 题；
-4. 第二轮按错/漏答累计 4 次时最多 8 题，不再继续加题；
-5. 连续 3 个 NoResponse 后只要第 4 个 trial 按了任意 S/L 键，即使按错，也不会触发 `_2` slide；
-6. 连续 4 个 NoResponse 后正确显示 `practice_1_2.png` 或 `practice_2_2.png`；
-7. `_2` slide 按 SPACEBAR 后重新显示对应的 `practice_1 + practice_1_1` 或 `practice_2 + practice_2_1`；
-8. 重启后重新从固定 4 题开始，并再次按 Error 动态加题；
-9. CSV 中 `SecondPracticeAttempt`、`NoResponseStreak`、`RestartTriggered` 等字段与实际行为一致。
-
----
-
-## 9. 本次版本涉及文件
-
-需要替换/更新：
-
-```text
-experiment.js
-index.html
-README.md
-```
-
-并确保 `resources/` 中存在：
-
-```text
-practice_1.png
-practice_1_1.png
-practice_1_2.png
-practice_2.png
-practice_2_1.png
-practice_2_2.png
-```
-
-其余现有实验材料继续使用你当前 `resources/` 文件夹中的原文件，不需要改名。
+The underlying task, the initial browser implementation, and the subsequent revisions represent distinct contributions; the implementation credits above acknowledge that development history.
